@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Comprehensive Calculator & Converter</title>
+    <title>Comprehensive Ultimate Calculator & Hub</title>
     <style>
         * {
             box-sizing: border-box;
@@ -28,7 +28,7 @@
             background-color: #000000;
             width: 100%;
             max-width: 440px;
-            height: 92vh;
+            height: 95vh;
             display: flex;
             flex-direction: column;
             border-radius: 20px;
@@ -39,24 +39,25 @@
         .tabs-header {
             display: flex;
             background-color: #000000;
-            padding: 15px 10px 5px 10px;
+            padding: 20px 15px 5px 15px;
             border-bottom: 1px solid #1a1a1a;
         }
 
         .tab-btn {
             background: none;
             border: none;
-            color: #777777;
+            color: #555555;
             font-size: 1.4rem;
             font-weight: 600;
-            margin-right: 20px;
+            margin-right: 25px;
             cursor: pointer;
-            padding-bottom: 5px;
+            padding-bottom: 8px;
             transition: color 0.2s ease;
         }
 
         .tab-btn.active {
             color: #ffffff;
+            border-bottom: 2px solid #ffffff;
         }
 
         /* Viewport Windows */
@@ -77,7 +78,7 @@
             background-color: #000000;
             padding: 20px 10px;
             text-align: right;
-            min-height: 120px;
+            min-height: 140px;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
@@ -85,14 +86,18 @@
 
         .display .history {
             color: #777777;
-            font-size: 1rem;
-            min-height: 24px;
+            font-size: 1.1rem;
+            min-height: 26px;
+            overflow-x: auto;
+            white-space: nowrap;
         }
 
         .display .input-output {
             color: #ffffff;
-            font-size: 3rem;
-            font-weight: 400;
+            font-size: 3.2rem;
+            font-weight: 300;
+            overflow-x: auto;
+            white-space: nowrap;
         }
 
         .calc-grid {
@@ -100,33 +105,37 @@
             grid-template-columns: repeat(5, 1fr);
             gap: 12px;
             margin-top: auto;
+            padding-bottom: 10px;
         }
 
         .calc-grid button {
             border: none;
             outline: none;
-            padding: 18px 5px;
-            font-size: 1.2rem;
+            padding: 15px 5px;
+            font-size: 1.25rem;
             border-radius: 50%;
             cursor: pointer;
             background-color: #1c1c1e;
             color: #ffffff;
             touch-action: manipulation;
             aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .calc-grid button:active { opacity: 0.6; }
-        .calc-grid button.sci { color: #999999; font-size: 1.05rem; }
-        .calc-grid button.op { color: #f2a33c; font-size: 1.4rem; }
-        .calc-grid button.util { color: #f2a33c; }
+        .calc-grid button:active { opacity: 0.5; }
+        .calc-grid button.sci { color: #a5a5a5; font-size: 1.05rem; background-color: #121214; }
+        .calc-grid button.op { color: #f2a33c; font-size: 1.5rem; background-color: #1c1c1e; }
+        .calc-grid button.util { color: #f2a33c; font-size: 1.2rem; }
         .calc-grid button.equals { background-color: #f2a33c; color: #ffffff; }
 
         /* ================= CONVERTER VIEW ================= */
         .converter-menu {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 25px 15px;
-            padding-top: 15px;
+            gap: 30px 15px;
+            padding-top: 20px;
         }
 
         .menu-item {
@@ -135,81 +144,121 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: #aaaaaa;
-            text-decoration: none;
-            padding: 10px;
-            border-radius: 12px;
-            transition: background 0.2s;
+            color: #999999;
+            padding: 12px 5px;
+            border-radius: 16px;
+            background-color: #0a0a0a;
+            border: 1px solid #151515;
         }
 
-        .menu-item:active { background-color: #1c1c1e; }
+        .menu-item:active { background-color: #1c1c1e; color: #ffffff; }
 
         .menu-item .icon {
-            font-size: 1.8rem;
-            margin-bottom: 8px;
+            font-size: 2rem;
+            margin-bottom: 10px;
             color: #ffffff;
         }
 
         .menu-item span {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            font-weight: 500;
             text-align: center;
         }
 
-        /* Dynamic Working Sheet Panel for active conversion */
-        .conversion-pane {
+        /* Panels for Active Operations */
+        .conversion-pane, .special-pane {
             display: none;
             flex-direction: column;
-            gap: 20px;
-            background: #121212;
-            padding: 15px;
-            border-radius: 12px;
-            margin-top: 10px;
+            gap: 22px;
+            background: #111113;
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid #222225;
+            margin-top: 5px;
         }
 
         .pane-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #222;
-            padding-bottom: 10px;
+            border-bottom: 1px solid #222225;
+            padding-bottom: 12px;
+            margin-bottom: 5px;
+        }
+
+        .pane-header h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #f2a33c;
         }
 
         .back-btn {
             background: none;
             border: none;
-            color: #f2a33c;
-            font-weight: bold;
+            color: #ffffff;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
         }
 
         .unit-row {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 8px;
         }
 
-        .unit-row select {
+        .unit-row label {
+            font-size: 0.85rem;
+            color: #8e8e93;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .unit-row select, .special-pane select {
             background: #2c2c2e;
             color: white;
             border: none;
-            padding: 8px;
-            border-radius: 6px;
+            padding: 12px;
+            border-radius: 8px;
             outline: none;
+            font-size: 1rem;
+            width: 100%;
         }
 
-        .unit-row input {
+        .unit-row input, .special-pane input {
             background: transparent;
             border: none;
-            border-bottom: 2px solid #333;
+            border-bottom: 2px solid #3a3a3c;
             color: white;
-            font-size: 1.5rem;
-            padding: 5px;
+            font-size: 1.8rem;
+            padding: 6px 0;
             outline: none;
+            width: 100%;
         }
-        .unit-row input:focus { border-color: #f2a33c; }
+        .unit-row input:focus, .special-pane input:focus { border-color: #f2a33c; }
+        
+        /* Layout modifications specifically for multi-input calculation modules */
+        .bmi-row-group, .discount-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .result-box {
+            background: #1c1c1e;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 10px;
+            border: 1px solid #2c2c2e;
+        }
+
+        .result-box h4 { font-size: 1.6rem; color: #f2a33c; margin-bottom: 4px; }
+        .result-box p { font-size: 0.9rem; color: #aaa; }
 
         @media (max-width: 380px) {
-            .calc-grid button { padding: 12px 2px; }
+            .calc-grid button { padding: 10px 2px; font-size: 1.1rem; }
+            .converter-menu { gap: 15px 10px; }
         }
     </style>
 </head>
@@ -242,7 +291,7 @@
                 <button class="sci" data-val="Math.sqrt(">√x</button>
                 <button class="util" data-val="ac">AC</button>
                 <button class="util" data-val="back">⌫</button>
-                <button class="op" data-val="pct">%</button>
+                <button class="op" data-val="*0.01">%</button>
                 <button class="op" data-val="/">÷</button>
 
                 <button class="sci" data-val="fact">x!</button>
@@ -273,138 +322,289 @@
 
         <div id="converter" class="tab-content">
             <div class="converter-menu" id="menu-grid">
-                <div class="menu-item" onclick="openConverter('Length')">
+                <div class="menu-item" onclick="openStandardConverter('Length')">
                     <div class="icon">📏</div><span>Length</span>
                 </div>
-                <div class="menu-item" onclick="openConverter('Mass')">
+                <div class="menu-item" onclick="openStandardConverter('Mass')">
                     <div class="icon">⚖️</div><span>Mass</span>
                 </div>
-                <div class="menu-item" onclick="openConverter('Area')">
+                <div class="menu-item" onclick="openStandardConverter('Area')">
                     <div class="icon">📐</div><span>Area</span>
                 </div>
-                <div class="menu-item" onclick="openConverter('Time')">
+                <div class="menu-item" onclick="openStandardConverter('Time')">
                     <div class="icon">🕒</div><span>Time</span>
                 </div>
-                <div class="menu-item">
-                    <div class="icon" style="opacity: 0.3;">💱</div><span style="opacity: 0.3;">Currency</span>
+                <div class="menu-item" onclick="openStandardConverter('Volume')">
+                    <div class="icon">🧪</div><span>Volume</span>
                 </div>
-                <div class="menu-item">
-                    <div class="icon" style="opacity: 0.3;">📊</div><span style="opacity: 0.3;">Finance</span>
+                <div class="menu-item" onclick="openStandardConverter('Speed')">
+                    <div class="icon">💨</div><span>Speed</span>
+                </div>
+                <div class="menu-item" onclick="openStandardConverter('Temperature')">
+                    <div class="icon">🌡️</div><span>Temperature</span>
+                </div>
+                <div class="menu-item" onclick="openStandardConverter('Data')">
+                    <div class="icon">💾</div><span>Data</span>
+                </div>
+                <div class="menu-item" onclick="openStandardConverter('Numeral')">
+                    <div class="icon">🔢</div><span>Numeral system</span>
+                </div>
+                <div class="menu-item" onclick="openSpecialPane('Discount')">
+                    <div class="icon">🏷️</div><span>Discount</span>
+                </div>
+                <div class="menu-item" onclick="openSpecialPane('Date')">
+                    <div class="icon">📅</div><span>Date</span>
+                </div>
+                <div class="menu-item" onclick="openSpecialPane('BMI')">
+                    <div class="icon">🏃</div><span>BMI</span>
                 </div>
             </div>
 
             <div class="conversion-pane" id="conversion-pane">
                 <div class="pane-header">
                     <h3 id="pane-title">Converter</h3>
-                    <button class="back-btn" onclick="closeConverter()">✕ Close</button>
+                    <button class="back-btn" onclick="closePanes()">✕ Close</button>
                 </div>
                 <div class="unit-row">
-                    <label>From:</label>
+                    <label>From</label>
                     <select id="unit-from" onchange="runConversion()"></select>
                     <input type="number" id="val-from" value="1" oninput="runConversion()">
                 </div>
                 <div class="unit-row">
-                    <label>To:</label>
+                    <label>To</label>
                     <select id="unit-to" onchange="runConversion()"></select>
                     <input type="number" id="val-to" readonly>
                 </div>
             </div>
+
+            <div class="special-pane" id="discount-pane">
+                <div class="pane-header">
+                    <h3>Discount Analyzer</h3>
+                    <button class="back-btn" onclick="closePanes()">✕ Close</button>
+                </div>
+                <div class="unit-row"><label>Original Price</label><input type="number" id="disc-price" value="100" oninput="calcDiscount()"></div>
+                <div class="discount-box">
+                    <div class="unit-row"><label>Discount (%)</label><input type="number" id="disc-pct" value="20" oninput="calcDiscount()"></div>
+                    <div class="unit-row"><label>Tax (%)</label><input type="number" id="disc-tax" value="0" oninput="calcDiscount()"></div>
+                </div>
+                <div class="result-box"><h4 id="disc-final">$80.00</h4><p id="disc-saved">You save: $20.00</p></div>
+            </div>
+
+            <div class="special-pane" id="date-pane">
+                <div class="pane-header">
+                    <h3>Date Difference</h3>
+                    <button class="back-btn" onclick="closePanes()">✕ Close</button>
+                </div>
+                <div class="unit-row"><label>Start Date</label><input type="date" id="date-start" onchange="calcDateDiff()"></div>
+                <div class="unit-row"><label>End Date</label><input type="date" id="date-end" onchange="calcDateDiff()"></div>
+                <div class="result-box"><h4 id="date-result">0 Days</h4><p>Total difference period</p></div>
+            </div>
+
+            <div class="special-pane" id="bmi-pane">
+                <div class="pane-header">
+                    <h3>BMI Calculator</h3>
+                    <button class="back-btn" onclick="closePanes()">✕ Close</button>
+                </div>
+                <div class="bmi-row-group">
+                    <div class="unit-row"><label>Weight (kg)</label><input type="number" id="bmi-weight" value="70" oninput="calcBMI()"></div>
+                    <div class="unit-row"><label>Height (cm)</label><input type="number" id="bmi-height" value="175" oninput="calcBMI()"></div>
+                </div>
+                <div class="result-box"><h4 id="bmi-score">22.86</h4><p id="bmi-status">Normal weight</p></div>
+            </div>
+
         </div>
     </div>
 
     <script>
-        // Tab Switching Logic Engine
+        // Tab Layout Engine Setup
         function switchTab(tabId) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            
             event.target.classList.add('active');
             document.getElementById(tabId).classList.add('active');
+            closePanes();
         }
 
-        // ================= CALCULATOR CORE INTERACTION RUNTIME =================
+        function closePanes() {
+            document.getElementById('conversion-pane').style.display = 'none';
+            document.getElementById('discount-pane').style.display = 'none';
+            document.getElementById('date-pane').style.display = 'none';
+            document.getElementById('bmi-pane').style.display = 'none';
+            document.getElementById('menu-grid').style.display = 'grid';
+        }
+
+        // ================= CALCULATOR LOGIC RUNTIME =================
         const displayMain = document.getElementById('display-main');
         const displayHistory = document.getElementById('history');
         let currentExpression = '';
 
         document.querySelectorAll('.calc-grid button').forEach(button => {
-            const handleAction = (e) => {
+            const tapHandler = (e) => {
                 e.preventDefault();
                 processInput(button.getAttribute('data-val'));
             };
-            button.addEventListener('touchstart', handleAction, { passive: false });
-            button.addEventListener('click', handleAction);
+            button.addEventListener('touchstart', tapHandler, { passive: false });
+            button.addEventListener('click', tapHandler);
         });
 
         function processInput(val) {
             if (!val || val === '2nd' || val === 'deg' || val === 'expanded') return;
             if (val === 'ac') { currentExpression = ''; displayHistory.innerText = ''; displayMain.innerText = '0'; }
-            else if (val === 'back') { currentExpression = currentExpression.slice(0, -1); formatDisplay(); }
+            else if (val === 'back') { currentExpression = currentExpression.slice(0, -1); updateDisplay(); }
             else if (val === 'equal') { calculate(); }
-            else if (val === '1/') { currentExpression += '1/('; formatDisplay(); }
-            else { currentExpression += val; formatDisplay(); }
+            else if (val === '1/') { currentExpression += '1/('; updateDisplay(); }
+            else { currentExpression += val; updateDisplay(); }
         }
 
-        function formatDisplay() {
-            displayMain.innerText = currentExpression ? currentExpression.replace(/Math\./g, '') : '0';
+        function updateDisplay() {
+            if (!currentExpression) { displayMain.innerText = '0'; return; }
+            let formatted = currentExpression
+                .replace(/Math\.asin\(/g, 'asin(').replace(/Math\.acos\(/g, 'acos(').replace(/Math\.atan\(/g, 'atan(')
+                .replace(/Math\.LN10\*Math\.log10\(/g, 'lg(').replace(/Math\.log\(/g, 'ln(').replace(/Math\.sqrt\(/g, '✓(')
+                .replace(/\*\*/g, '^').replace(/\*/g, '×').replace(/\//g, '÷').replace(/Math\.PI/g, 'π').replace(/Math\.E/g, 'e');
+            displayMain.innerText = formatted;
         }
 
         function calculate() {
             try {
-                let result = eval(currentExpression);
+                let evalTarget = currentExpression;
+                if (evalTarget.includes('fact')) {
+                    evalTarget = evalTarget.replace(/(\d+)(calcFact\(\)|fact)/g, function(m, p1) {
+                        let f = 1; for(let i=2; i<=parseInt(p1); i++) f*=i; return f;
+                    });
+                }
+                let finalVal = eval(evalTarget);
                 displayHistory.innerText = displayMain.innerText + ' =';
-                displayMain.innerText = Number(result.toFixed(6));
-                currentExpression = result.toString();
+                displayMain.innerText = Number(finalVal.toFixed(6));
+                currentExpression = finalVal.toString();
             } catch {
                 displayMain.innerText = 'Error';
                 currentExpression = '';
             }
         }
 
-        // ================= CONVERTER CORE INTERACTION RUNTIME =================
-        const unitData = {
+        // ================= CONVERTER SYSTEM MASTER MATRICES =================
+        const conversionMatrix = {
             Length: { units: ['Meters', 'Kilometers', 'Centimeters', 'Miles', 'Feet'], factors: { Meters: 1, Kilometers: 1000, Centimeters: 0.01, Miles: 1609.34, Feet: 0.3048 } },
             Mass: { units: ['Kilograms', 'Grams', 'Pounds', 'Ounces'], factors: { Kilograms: 1, Grams: 0.001, Pounds: 0.453592, Ounces: 0.0283495 } },
             Area: { units: ['Square Meters', 'Square Kilometers', 'Acres', 'Hectares'], factors: { 'Square Meters': 1, 'Square Kilometers': 1000000, Acres: 4046.86, Hectares: 10000 } },
-            Time: { units: ['Seconds', 'Minutes', 'Hours', 'Days'], factors: { Seconds: 1, Minutes: 60, Hours: 3600, Days: 86400 } }
+            Time: { units: ['Seconds', 'Minutes', 'Hours', 'Days', 'Weeks'], factors: { Seconds: 1, Minutes: 60, Hours: 3600, Days: 86400, Weeks: 604800 } },
+            Volume: { units: ['Liters', 'Milliliters', 'Gallons', 'Cups'], factors: { Liters: 1, Milliliters: 0.001, Gallons: 3.78541, Cups: 0.236588 } },
+            Speed: { units: ['m/s', 'km/h', 'mph', 'Knots'], factors: { 'm/s': 1, 'km/h': 0.277778, mph: 0.44704, Knots: 0.514444 } },
+            Data: { units: ['Bytes', 'Kilobytes (KB)', 'Megabytes (MB)', 'Gigabytes (GB)', 'Terabytes (TB)'], factors: { Bytes: 1, 'Kilobytes (KB)': 1024, 'Megabytes (MB)': 1048576, 'Gigabytes (GB)': 1073741824, 'Terabytes (TB)': 1099511627776 } }
         };
 
-        let currentActiveType = '';
+        let activeConversionCategory = '';
 
-        function openConverter(type) {
-            currentActiveType = type;
-            document.getElementById('pane-title').innerText = type + " Converter";
+        function openStandardConverter(category) {
+            activeConversionCategory = category;
             document.getElementById('menu-grid').style.display = 'none';
             document.getElementById('conversion-pane').style.display = 'flex';
+            document.getElementById('pane-title').innerText = category + " Converter";
 
-            const fromSel = document.getElementById('unit-from');
-            const toSel = document.getElementById('unit-to');
-            fromSel.innerHTML = ''; toSel.innerHTML = '';
+            const fromSelect = document.getElementById('unit-from');
+            const toSelect = document.getElementById('unit-to');
+            fromSelect.innerHTML = ''; toSelect.innerHTML = '';
 
-            unitData[type].units.forEach(u => {
-                fromSel.add(new Option(u, u));
-                toSel.add(new Option(u, u));
-            });
-            if(toSel.options.length > 1) toSel.selectedIndex = 1;
+            if (category === 'Temperature') {
+                ['Celsius', 'Fahrenheit', 'Kelvin'].forEach(u => { fromSelect.add(new Option(u,u)); toSelect.add(new Option(u,u)); });
+            } else if (category === 'Numeral') {
+                ['Decimal', 'Hexadecimal', 'Octal', 'Binary'].forEach(u => { fromSelect.add(new Option(u,u)); toSelect.add(new Option(u,u)); });
+            } else {
+                conversionMatrix[category].units.forEach(u => { fromSelect.add(new Option(u,u)); toSelect.add(new Option(u,u)); });
+            }
+            if (toSelect.options.length > 1) toSelect.selectedIndex = 1;
             runConversion();
         }
 
-        function closeConverter() {
-            document.getElementById('conversion-pane').style.display = 'none';
-            document.getElementById('menu-grid').style.display = 'grid';
-        }
-
         function runConversion() {
-            const type = currentActiveType;
             const fromUnit = document.getElementById('unit-from').value;
             const toUnit = document.getElementById('unit-to').value;
-            const inputVal = parseFloat(document.getElementById('val-from').value) || 0;
+            const inputField = document.getElementById('val-from');
+            const outputField = document.getElementById('val-to');
 
-            // Convert to a base standard unit first, then map outwards
-            const baseValue = inputVal * unitData[type].factors[fromUnit];
-            const outputVal = baseValue / unitData[type].factors[toUnit];
+            if (activeConversionCategory === 'Temperature') {
+                let val = parseFloat(inputField.value);
+                if (isNaN(val)) { outputField.value = ''; return; }
+                let c = fromUnit === 'Celsius' ? val : fromUnit === 'Fahrenheit' ? (val-32)*5/9 : val-273.15;
+                let finalVal = toUnit === 'Celsius' ? c : toUnit === 'Fahrenheit' ? (c*9/5)+32 : c+273.15;
+                outputField.value = Number(finalVal.toFixed(4));
+            } 
+            else if (activeConversionCategory === 'Numeral') {
+                let rawInput = inputField.value.trim();
+                if (!rawInput) { outputField.value = ''; return; }
+                let decBase = 0;
+                try {
+                    if(fromUnit==='Decimal') decBase = parseInt(rawInput, 10);
+                    else if(fromUnit==='Hexadecimal') decBase = parseInt(rawInput, 16);
+                    else if(fromUnit==='Octal') decBase = parseInt(rawInput, 8);
+                    else if(fromUnit==='Binary') decBase = parseInt(rawInput, 2);
+                    
+                    if (isNaN(decBase)) throw new Error();
 
-            document.getElementById('val-to').value = outputVal.toString().includes('.') ? outputVal.toFixed(5) : outputVal;
+                    if(toUnit==='Decimal') outputField.value = decBase.toString(10);
+                    else if(toUnit==='Hexadecimal') outputField.value = decBase.toString(16).toUpperCase();
+                    else if(toUnit==='Octal') outputField.value = decBase.toString(8);
+                    else if(toUnit==='Binary') outputField.value = decBase.toString(2);
+                } catch { outputField.value = 'Invalid Entry'; }
+            } 
+            else {
+                let val = parseFloat(inputField.value) || 0;
+                let baseValue = val * conversionMatrix[activeConversionCategory].factors[fromUnit];
+                let outValue = baseValue / conversionMatrix[activeConversionCategory].factors[toUnit];
+                outputField.value = outValue.toString().includes('.') ? Number(outValue.toFixed(5)) : outValue;
+            }
+        }
+
+        // ================= SPECIAL SUITE PANEL INTERACTION RUNTIME =================
+        function openSpecialPane(paneKey) {
+            document.getElementById('menu-grid').style.display = 'none';
+            if (paneKey === 'Discount') {
+                document.getElementById('discount-pane').style.display = 'flex'; calcDiscount();
+            } else if (paneKey === 'Date') {
+                let todayStr = new Date().toISOString().split('T')[0];
+                document.getElementById('date-start').value = todayStr;
+                document.getElementById('date-end').value = todayStr;
+                document.getElementById('date-pane').style.display = 'flex'; calcDateDiff();
+            } else if (paneKey === 'BMI') {
+                document.getElementById('bmi-pane').style.display = 'flex'; calcBMI();
+            }
+        }
+
+        function calcDiscount() {
+            let price = parseFloat(document.getElementById('disc-price').value) || 0;
+            let discount = parseFloat(document.getElementById('disc-pct').value) || 0;
+            let tax = parseFloat(document.getElementById('disc-tax').value) || 0;
+            
+            let savings = price * (discount / 100);
+            let subtotal = price - savings;
+            let finalPrice = subtotal + (subtotal * (tax / 100));
+
+            document.getElementById('disc-final').innerText = "$" + finalPrice.toFixed(2);
+            document.getElementById('disc-saved').innerText = "You save: $" + savings.toFixed(2);
+        }
+
+        function calcDateDiff() {
+            let d1 = new Date(document.getElementById('date-start').value);
+            let d2 = new Date(document.getElementById('date-end').value);
+            if(isNaN(d1) || isNaN(d2)) return;
+            let absoluteDiff = Math.abs(d2 - d1);
+            let totalDays = Math.ceil(absoluteDiff / (1000 * 60 * 60 * 24));
+            document.getElementById('date-result').innerText = totalDays + " Days";
+        }
+
+        function calcBMI() {
+            let w = parseFloat(document.getElementById('bmi-weight').value) || 0;
+            let h = parseFloat(document.getElementById('bmi-height').value) || 0;
+            if (w <= 0 || h <= 0) { document.getElementById('bmi-score').innerText = "0.0"; return; }
+            let bmi = w / ((h / 100) ** 2);
+            document.getElementById('bmi-score').innerText = bmi.toFixed(2);
+
+            let status = 'Normal weight';
+            if(bmi < 18.5) status = 'Underweight';
+            else if(bmi >= 25 && bmi < 29.9) status = 'Overweight';
+            else if(bmi >= 30) status = 'Obese';
+            document.getElementById('bmi-status').innerText = status;
         }
     </script>
 </body>

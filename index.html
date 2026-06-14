@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Comprehensive Ultimate Calculator & Hub</title>
+    <title>Ultimate Dynamic Hub</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
 
         body {
-            background-color: #000000;
+            background-color: #08080a;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -25,79 +25,89 @@
         }
 
         .app-container {
-            background-color: #000000;
+            background: linear-gradient(145deg, #0f0f12, #050507);
             width: 100%;
             max-width: 440px;
-            height: 95vh;
+            height: 94vh;
             display: flex;
             flex-direction: column;
-            border-radius: 20px;
+            border-radius: 28px;
             overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            border: 1px solid #1a1a22;
         }
 
-        /* Tabs Header Navigation */
+        /* Dynamic Tabs Header */
         .tabs-header {
             display: flex;
-            background-color: #000000;
-            padding: 20px 15px 5px 15px;
-            border-bottom: 1px solid #1a1a1a;
+            background-color: rgba(10, 10, 14, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px 20px 10px 20px;
+            border-bottom: 1px solid #15151a;
+            gap: 10px;
         }
 
         .tab-btn {
             background: none;
             border: none;
-            color: #555555;
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-right: 25px;
+            color: #4e4e5a;
+            font-size: 1.3rem;
+            font-weight: 700;
             cursor: pointer;
-            padding-bottom: 8px;
-            transition: color 0.2s ease;
+            padding: 6px 12px;
+            border-radius: 12px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
         }
 
         .tab-btn.active {
             color: #ffffff;
-            border-bottom: 2px solid #ffffff;
+            background-color: #16161f;
         }
 
-        /* Viewport Windows */
-        .tab-content {
-            display: none;
+        /* Viewport Carousel Windows */
+        .tab-view-wrapper {
             flex: 1;
-            flex-direction: column;
-            padding: 15px;
-            overflow-y: auto;
+            display: flex;
+            width: 200%; /* Accommodates side-by-side view sliding */
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .tab-content.active {
+        .tab-content {
+            width: 50%;
+            height: 100%;
             display: flex;
+            flex-direction: column;
+            padding: 20px;
+            overflow-y: auto;
         }
 
         /* ================= CALCULATOR VIEW ================= */
         .display {
-            background-color: #000000;
-            padding: 20px 10px;
+            padding: 10px;
             text-align: right;
             min-height: 140px;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
+            margin-bottom: 15px;
         }
 
         .display .history {
-            color: #777777;
+            color: #636366;
             font-size: 1.1rem;
             min-height: 26px;
-            overflow-x: auto;
-            white-space: nowrap;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
         }
 
         .display .input-output {
             color: #ffffff;
-            font-size: 3.2rem;
+            font-size: 3.4rem;
             font-weight: 300;
             overflow-x: auto;
             white-space: nowrap;
+            margin-top: 5px;
         }
 
         .calc-grid {
@@ -105,37 +115,42 @@
             grid-template-columns: repeat(5, 1fr);
             gap: 12px;
             margin-top: auto;
-            padding-bottom: 10px;
         }
 
         .calc-grid button {
             border: none;
             outline: none;
-            padding: 15px 5px;
-            font-size: 1.25rem;
+            font-size: 1.3rem;
+            font-weight: 500;
             border-radius: 50%;
             cursor: pointer;
-            background-color: #1c1c1e;
+            background: #1c1c1e;
             color: #ffffff;
             touch-action: manipulation;
             aspect-ratio: 1;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: transform 0.1s ease, background-color 0.2s ease;
         }
 
-        .calc-grid button:active { opacity: 0.5; }
-        .calc-grid button.sci { color: #a5a5a5; font-size: 1.05rem; background-color: #121214; }
-        .calc-grid button.op { color: #f2a33c; font-size: 1.5rem; background-color: #1c1c1e; }
-        .calc-grid button.util { color: #f2a33c; font-size: 1.2rem; }
-        .calc-grid button.equals { background-color: #f2a33c; color: #ffffff; }
+        .calc-grid button:active {
+            transform: scale(0.92);
+            background-color: #2c2c2e;
+        }
 
-        /* ================= CONVERTER VIEW ================= */
+        .calc-grid button.sci { color: #9a9a9f; font-size: 1.1rem; background: #121214; }
+        .calc-grid button.op { color: #ff9f0a; font-size: 1.6rem; background: #1c1c1e; }
+        .calc-grid button.util { color: #ff9f0a; font-size: 1.2rem; }
+        .calc-grid button.equals { background: #ff9f0a; color: #ffffff; }
+        .calc-grid button.equals:active { background: #ffb347; }
+
+        /* ================= CONVERTER MENU VIEW ================= */
         .converter-menu {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 30px 15px;
-            padding-top: 20px;
+            gap: 16px;
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
         .menu-item {
@@ -144,60 +159,71 @@
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            color: #999999;
-            padding: 12px 5px;
-            border-radius: 16px;
-            background-color: #0a0a0a;
-            border: 1px solid #151515;
+            color: #aeaeaeff;
+            padding: 16px 8px;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #16161a, #0e0e12);
+            border: 1px solid #1c1c24;
+            transition: all 0.2s ease;
         }
 
-        .menu-item:active { background-color: #1c1c1e; color: #ffffff; }
+        .menu-item:active {
+            transform: scale(0.95);
+            background: #1c1c24;
+            color: #ffffff;
+        }
 
         .menu-item .icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            color: #ffffff;
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
         }
 
         .menu-item span {
             font-size: 0.85rem;
-            font-weight: 500;
+            font-weight: 600;
             text-align: center;
         }
 
-        /* Panels for Active Operations */
+        /* Interactive Dynamic Panes */
         .conversion-pane, .special-pane {
             display: none;
             flex-direction: column;
-            gap: 22px;
-            background: #111113;
+            gap: 20px;
+            background: #121216;
             padding: 20px;
-            border-radius: 16px;
-            border: 1px solid #222225;
-            margin-top: 5px;
+            border-radius: 24px;
+            border: 1px solid #22222c;
+            animation: paneSlideUp 0.3s cubic-bezier(0.1, 0.8, 0.3, 1);
+        }
+
+        @keyframes paneSlideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .pane-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #222225;
-            padding-bottom: 12px;
-            margin-bottom: 5px;
+            border-bottom: 1px solid #22222c;
+            padding-bottom: 14px;
         }
 
         .pane-header h3 {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             font-weight: 600;
-            color: #f2a33c;
+            color: #ff9f0a;
         }
 
         .back-btn {
-            background: none;
+            background: #1c1c24;
             border: none;
             color: #ffffff;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 600;
+            padding: 6px 14px;
+            border-radius: 10px;
             cursor: pointer;
         }
 
@@ -208,57 +234,57 @@
         }
 
         .unit-row label {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: #8e8e93;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
+            font-weight: 600;
         }
 
         .unit-row select, .special-pane select {
-            background: #2c2c2e;
+            background: #1c1c24;
             color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
+            border: 1px solid #2c2c3c;
+            padding: 14px;
+            border-radius: 12px;
             outline: none;
             font-size: 1rem;
-            width: 100%;
+            appearance: none;
         }
 
         .unit-row input, .special-pane input {
             background: transparent;
             border: none;
-            border-bottom: 2px solid #3a3a3c;
+            border-bottom: 2px solid #2c2c3c;
             color: white;
-            font-size: 1.8rem;
-            padding: 6px 0;
+            font-size: 2rem;
+            padding: 4px 0;
             outline: none;
-            width: 100%;
+            transition: border-color 0.2s;
         }
-        .unit-row input:focus, .special-pane input:focus { border-color: #f2a33c; }
-        
-        /* Layout modifications specifically for multi-input calculation modules */
-        .bmi-row-group, .discount-box {
+        .unit-row input:focus, .special-pane input:focus { border-color: #ff9f0a; }
+
+        .double-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
         }
 
         .result-box {
-            background: #1c1c1e;
-            padding: 15px;
-            border-radius: 10px;
+            background: linear-gradient(145deg, #1c1c24, #15151c);
+            padding: 18px;
+            border-radius: 16px;
             text-align: center;
-            margin-top: 10px;
-            border: 1px solid #2c2c2e;
+            border: 1px solid #2a2a38;
+            margin-top: 5px;
         }
 
-        .result-box h4 { font-size: 1.6rem; color: #f2a33c; margin-bottom: 4px; }
-        .result-box p { font-size: 0.9rem; color: #aaa; }
+        .result-box h4 { font-size: 1.8rem; color: #ff9f0a; font-weight: 600; margin-bottom: 4px; }
+        .result-box p { font-size: 0.9rem; color: #8e8e93; }
 
         @media (max-width: 380px) {
-            .calc-grid button { padding: 10px 2px; font-size: 1.1rem; }
-            .converter-menu { gap: 15px 10px; }
+            .calc-grid button { font-size: 1.15rem; }
+            .converter-menu { gap: 12px; }
         }
     </style>
 </head>
@@ -266,162 +292,171 @@
 
     <div class="app-container">
         <div class="tabs-header">
-            <button class="tab-btn active" onclick="switchTab('calculator')">Calculator</button>
-            <button class="tab-btn" onclick="switchTab('converter')">Converter</button>
+            <button class="tab-btn active" id="btn-calc" onclick="switchTab('calculator')">Calculator</button>
+            <button class="tab-btn" id="btn-conv" onclick="switchTab('converter')">Converter</button>
         </div>
 
-        <div id="calculator" class="tab-content active">
-            <div class="display">
-                <div class="history" id="history"></div>
-                <div class="input-output" id="display-main">0</div>
-            </div>
-            <div class="calc-grid">
-                <button class="sci" data-val="2nd">2nd</button>
-                <button class="sci" data-val="deg">deg</button>
-                <button class="sci" data-val="Math.asin(">sin⁻¹</button>
-                <button class="sci" data-val="Math.acos(">cos⁻¹</button>
-                <button class="sci" data-val="Math.atan(">tan⁻¹</button>
+        <div class="tab-view-wrapper" id="view-wrapper">
+            
+            <div id="calculator" class="tab-content">
+                <div class="display">
+                    <div class="history" id="history"></div>
+                    <div class="input-output" id="display-main">0</div>
+                </div>
+                <div class="calc-grid">
+                    <button class="sci" data-val="2nd">2nd</button>
+                    <button class="sci" data-val="deg">deg</button>
+                    <button class="sci" data-val="Math.asin(">sin⁻¹</button>
+                    <button class="sci" data-val="Math.acos(">cos⁻¹</button>
+                    <button class="sci" data-val="Math.atan(">tan⁻¹</button>
 
-                <button class="sci" data-val="**">x<sup>y</sup></button>
-                <button class="sci" data-val="Math.LN10*Math.log10(">lg</button>
-                <button class="sci" data-val="Math.log(">ln</button>
-                <button class="sci" data-val="(">(</button>
-                <button class="sci" data-val=")">)</button>
+                    <button class="sci" data-val="**">x<sup>y</sup></button>
+                    <button class="sci" data-val="Math.LN10*Math.log10(">lg</button>
+                    <button class="sci" data-val="Math.log(">ln</button>
+                    <button class="sci" data-val="(">(</button>
+                    <button class="sci" data-val=")">)</button>
 
-                <button class="sci" data-val="Math.sqrt(">√x</button>
-                <button class="util" data-val="ac">AC</button>
-                <button class="util" data-val="back">⌫</button>
-                <button class="op" data-val="*0.01">%</button>
-                <button class="op" data-val="/">÷</button>
+                    <button class="sci" data-val="Math.sqrt(">√x</button>
+                    <button class="util" data-val="ac">AC</button>
+                    <button class="util" data-val="back">⌫</button>
+                    <button class="op" data-val="*0.01">%</button>
+                    <button class="op" data-val="/">÷</button>
 
-                <button class="sci" data-val="fact">x!</button>
-                <button class="num" data-val="7">7</button>
-                <button class="num" data-val="8">8</button>
-                <button class="num" data-val="9">9</button>
-                <button class="op" data-val="*">×</button>
+                    <button class="sci" data-val="fact">x!</button>
+                    <button class="num" data-val="7">7</button>
+                    <button class="num" data-val="8">8</button>
+                    <button class="num" data-val="9">9</button>
+                    <button class="op" data-val="*">×</button>
 
-                <button class="sci" data-val="1/">1/x</button>
-                <button class="num" data-val="4">4</button>
-                <button class="num" data-val="5">5</button>
-                <button class="num" data-val="6">6</button>
-                <button class="op" data-val="-">−</button>
+                    <button class="sci" data-val="1/">1/x</button>
+                    <button class="num" data-val="4">4</button>
+                    <button class="num" data-val="5">5</button>
+                    <button class="num" data-val="6">6</button>
+                    <button class="op" data-val="-">−</button>
 
-                <button class="sci" data-val="Math.PI">π</button>
-                <button class="num" data-val="1">1</button>
-                <button class="num" data-val="2">2</button>
-                <button class="num" data-val="3">3</button>
-                <button class="op" data-val="+">+</button>
+                    <button class="sci" data-val="Math.PI">π</button>
+                    <button class="num" data-val="1">1</button>
+                    <button class="num" data-val="2">2</button>
+                    <button class="num" data-val="3">3</button>
+                    <button class="op" data-val="+">+</button>
 
-                <button class="sci" data-val="expanded">⇄</button>
-                <button class="sci" data-val="Math.E">e</button>
-                <button class="num" data-val="0">0</button>
-                <button class="num" data-val=".">.</button>
-                <button class="equals" data-val="equal">=</button>
-            </div>
-        </div>
-
-        <div id="converter" class="tab-content">
-            <div class="converter-menu" id="menu-grid">
-                <div class="menu-item" onclick="openStandardConverter('Length')">
-                    <div class="icon">📏</div><span>Length</span>
-                </div>
-                <div class="menu-item" onclick="openStandardConverter('Mass')">
-                    <div class="icon">⚖️</div><span>Mass</span>
-                </div>
-                <div class="menu-item" onclick="openStandardConverter('Area')">
-                    <div class="icon">📐</div><span>Area</span>
-                </div>
-                <div class="menu-item" onclick="openStandardConverter('Time')">
-                    <div class="icon">🕒</div><span>Time</span>
-                </div>
-                <div class="menu-item" onclick="openStandardConverter('Volume')">
-                    <div class="icon">🧪</div><span>Volume</span>
-                </div>
-                <div class="menu-item" onclick="openStandardConverter('Speed')">
-                    <div class="icon">💨</div><span>Speed</span>
-                </div>
-                <div class="menu-item" onclick="openStandardConverter('Temperature')">
-                    <div class="icon">🌡️</div><span>Temperature</span>
-                </div>
-                <div class="menu-item" onclick="openStandardConverter('Data')">
-                    <div class="icon">💾</div><span>Data</span>
-                </div>
-                <div class="menu-item" onclick="openStandardConverter('Numeral')">
-                    <div class="icon">🔢</div><span>Numeral system</span>
-                </div>
-                <div class="menu-item" onclick="openSpecialPane('Discount')">
-                    <div class="icon">🏷️</div><span>Discount</span>
-                </div>
-                <div class="menu-item" onclick="openSpecialPane('Date')">
-                    <div class="icon">📅</div><span>Date</span>
-                </div>
-                <div class="menu-item" onclick="openSpecialPane('BMI')">
-                    <div class="icon">🏃</div><span>BMI</span>
+                    <button class="sci" data-val="expanded">⇄</button>
+                    <button class="sci" data-val="Math.E">e</button>
+                    <button class="num" data-val="0">0</button>
+                    <button class="num" data-val=".">.</button>
+                    <button class="equals" data-val="equal">=</button>
                 </div>
             </div>
 
-            <div class="conversion-pane" id="conversion-pane">
-                <div class="pane-header">
-                    <h3 id="pane-title">Converter</h3>
-                    <button class="back-btn" onclick="closePanes()">✕ Close</button>
+            <div id="converter" class="tab-content">
+                <div class="converter-menu" id="menu-grid">
+                    <div class="menu-item" onclick="openStandardConverter('Length')">
+                        <div class="icon">📏</div><span>Length</span>
+                    </div>
+                    <div class="menu-item" onclick="openStandardConverter('Mass')">
+                        <div class="icon">⚖️</div><span>Mass</span>
+                    </div>
+                    <div class="menu-item" onclick="openStandardConverter('Area')">
+                        <div class="icon">📐</div><span>Area</span>
+                    </div>
+                    <div class="menu-item" onclick="openStandardConverter('Time')">
+                        <div class="icon">🕒</div><span>Time</span>
+                    </div>
+                    <div class="menu-item" onclick="openStandardConverter('Volume')">
+                        <div class="icon">🧪</div><span>Volume</span>
+                    </div>
+                    <div class="menu-item" onclick="openStandardConverter('Speed')">
+                        <div class="icon">💨</div><span>Speed</span>
+                    </div>
+                    <div class="menu-item" onclick="openStandardConverter('Temperature')">
+                        <div class="icon">🌡️</div><span>Temperature</span>
+                    </div>
+                    <div class="menu-item" onclick="openStandardConverter('Data')">
+                        <div class="icon">💾</div><span>Data</span>
+                    </div>
+                    <div class="menu-item" onclick="openStandardConverter('Numeral')">
+                        <div class="icon">🔢</div><span>Numeral system</span>
+                    </div>
+                    <div class="menu-item" onclick="openSpecialPane('Discount')">
+                        <div class="icon">🏷️</div><span>Discount</span>
+                    </div>
+                    <div class="menu-item" onclick="openSpecialPane('Date')">
+                        <div class="icon">📅</div><span>Date</span>
+                    </div>
+                    <div class="menu-item" onclick="openSpecialPane('BMI')">
+                        <div class="icon">🏃</div><span>BMI</span>
+                    </div>
                 </div>
-                <div class="unit-row">
-                    <label>From</label>
-                    <select id="unit-from" onchange="runConversion()"></select>
-                    <input type="number" id="val-from" value="1" oninput="runConversion()">
-                </div>
-                <div class="unit-row">
-                    <label>To</label>
-                    <select id="unit-to" onchange="runConversion()"></select>
-                    <input type="number" id="val-to" readonly>
-                </div>
-            </div>
 
-            <div class="special-pane" id="discount-pane">
-                <div class="pane-header">
-                    <h3>Discount Analyzer</h3>
-                    <button class="back-btn" onclick="closePanes()">✕ Close</button>
+                <div class="conversion-pane" id="conversion-pane">
+                    <div class="pane-header">
+                        <h3 id="pane-title">Converter</h3>
+                        <button class="back-btn" onclick="closePanes()">✕ Back</button>
+                    </div>
+                    <div class="unit-row">
+                        <label>From</label>
+                        <select id="unit-from" onchange="runConversion()"></select>
+                        <input type="number" id="val-from" value="1" oninput="runConversion()">
+                    </div>
+                    <div class="unit-row">
+                        <label>To</label>
+                        <select id="unit-to" onchange="runConversion()"></select>
+                        <input type="number" id="val-to" readonly>
+                    </div>
                 </div>
-                <div class="unit-row"><label>Original Price</label><input type="number" id="disc-price" value="100" oninput="calcDiscount()"></div>
-                <div class="discount-box">
-                    <div class="unit-row"><label>Discount (%)</label><input type="number" id="disc-pct" value="20" oninput="calcDiscount()"></div>
-                    <div class="unit-row"><label>Tax (%)</label><input type="number" id="disc-tax" value="0" oninput="calcDiscount()"></div>
-                </div>
-                <div class="result-box"><h4 id="disc-final">$80.00</h4><p id="disc-saved">You save: $20.00</p></div>
-            </div>
 
-            <div class="special-pane" id="date-pane">
-                <div class="pane-header">
-                    <h3>Date Difference</h3>
-                    <button class="back-btn" onclick="closePanes()">✕ Close</button>
+                <div class="special-pane" id="discount-pane">
+                    <div class="pane-header">
+                        <h3>Discount Analyzer</h3>
+                        <button class="back-btn" onclick="closePanes()">✕ Back</button>
+                    </div>
+                    <div class="unit-row"><label>Original Price</label><input type="number" id="disc-price" value="100" oninput="calcDiscount()"></div>
+                    <div class="double-row">
+                        <div class="unit-row"><label>Discount (%)</label><input type="number" id="disc-pct" value="20" oninput="calcDiscount()"></div>
+                        <div class="unit-row"><label>Tax (%)</label><input type="number" id="disc-tax" value="0" oninput="calcDiscount()"></div>
+                    </div>
+                    <div class="result-box"><h4 id="disc-final">$80.00</h4><p id="disc-saved">You save: $20.00</p></div>
                 </div>
-                <div class="unit-row"><label>Start Date</label><input type="date" id="date-start" onchange="calcDateDiff()"></div>
-                <div class="unit-row"><label>End Date</label><input type="date" id="date-end" onchange="calcDateDiff()"></div>
-                <div class="result-box"><h4 id="date-result">0 Days</h4><p>Total difference period</p></div>
-            </div>
 
-            <div class="special-pane" id="bmi-pane">
-                <div class="pane-header">
-                    <h3>BMI Calculator</h3>
-                    <button class="back-btn" onclick="closePanes()">✕ Close</button>
+                <div class="special-pane" id="date-pane">
+                    <div class="pane-header">
+                        <h3>Date Difference</h3>
+                        <button class="back-btn" onclick="closePanes()">✕ Back</button>
+                    </div>
+                    <div class="unit-row"><label>Start Date</label><input type="date" id="date-start" onchange="calcDateDiff()"></div>
+                    <div class="unit-row"><label>End Date</label><input type="date" id="date-end" onchange="calcDateDiff()"></div>
+                    <div class="result-box"><h4 id="date-result">0 Days</h4><p>Total separation matrix window</p></div>
                 </div>
-                <div class="bmi-row-group">
-                    <div class="unit-row"><label>Weight (kg)</label><input type="number" id="bmi-weight" value="70" oninput="calcBMI()"></div>
-                    <div class="unit-row"><label>Height (cm)</label><input type="number" id="bmi-height" value="175" oninput="calcBMI()"></div>
-                </div>
-                <div class="result-box"><h4 id="bmi-score">22.86</h4><p id="bmi-status">Normal weight</p></div>
-            </div>
 
+                <div class="special-pane" id="bmi-pane">
+                    <div class="pane-header">
+                        <h3>BMI Calculator</h3>
+                        <button class="back-btn" onclick="closePanes()">✕ Back</button>
+                    </div>
+                    <div class="double-row">
+                        <div class="unit-row"><label>Weight (kg)</label><input type="number" id="bmi-weight" value="70" oninput="calcBMI()"></div>
+                        <div class="unit-row"><label>Height (cm)</label><input type="number" id="bmi-height" value="175" oninput="calcBMI()"></div>
+                    </div>
+                    <div class="result-box"><h4 id="bmi-score">22.86</h4><p id="bmi-status">Normal weight</p></div>
+                </div>
+
+            </div>
         </div>
     </div>
 
     <script>
-        // Tab Layout Engine Setup
+        // Fluid Sliding Layout Engine Setup
+        const viewWrapper = document.getElementById('view-wrapper');
+        
         function switchTab(tabId) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            event.target.classList.add('active');
-            document.getElementById(tabId).classList.add('active');
+            if (tabId === 'calculator') {
+                document.getElementById('btn-calc').classList.add('active');
+                viewWrapper.style.transform = 'translateX(0%)';
+            } else {
+                document.getElementById('btn-conv').classList.add('active');
+                viewWrapper.style.transform = 'translateX(-50%)';
+            }
             closePanes();
         }
 
@@ -430,10 +465,11 @@
             document.getElementById('discount-pane').style.display = 'none';
             document.getElementById('date-pane').style.display = 'none';
             document.getElementById('bmi-pane').style.display = 'none';
+            document.getElementById('menu-grid').style.opacity = '1';
             document.getElementById('menu-grid').style.display = 'grid';
         }
 
-        // ================= CALCULATOR LOGIC RUNTIME =================
+        // ================= CALCULATOR CORE INTERACTION RUNTIME =================
         const displayMain = document.getElementById('display-main');
         const displayHistory = document.getElementById('history');
         let currentExpression = '';
@@ -483,7 +519,7 @@
             }
         }
 
-        // ================= CONVERTER SYSTEM MASTER MATRICES =================
+        // ================= CONVERTER COMPLEX MATRICES =================
         const conversionMatrix = {
             Length: { units: ['Meters', 'Kilometers', 'Centimeters', 'Miles', 'Feet'], factors: { Meters: 1, Kilometers: 1000, Centimeters: 0.01, Miles: 1609.34, Feet: 0.3048 } },
             Mass: { units: ['Kilograms', 'Grams', 'Pounds', 'Ounces'], factors: { Kilograms: 1, Grams: 0.001, Pounds: 0.453592, Ounces: 0.0283495 } },

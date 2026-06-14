@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Comprehensive Calculator & Converter</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        body {
+            background-color: #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #ffffff;
+            padding: 10px;
+        }
+
+        .app-container {
+            background-color: #000000;
+            width: 100%;
+            max-width: 440px;
+            height: 92vh;
+            display: flex;
+            flex-direction: column;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        /* Tabs Header Navigation */
+        .tabs-header {
+            display: flex;
+            background-color: #000000;
+            padding: 15px 10px 5px 10px;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: #777777;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-right: 20px;
+            cursor: pointer;
+            padding-bottom: 5px;
+            transition: color 0.2s ease;
+        }
+
+        .tab-btn.active {
+            color: #ffffff;
+        }
+
+        /* Viewport Windows */
+        .tab-content {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        /* ================= CALCULATOR VIEW ================= */
+        .display {
+            background-color: #000000;
+            padding: 20px 10px;
+            text-align: right;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .display .history {
+            color: #777777;
+            font-size: 1rem;
+            min-height: 24px;
+        }
+
+        .display .input-output {
+            color: #ffffff;
+            font-size: 3rem;
+            font-weight: 400;
+        }
+
+        .calc-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-top: auto;
+        }
+
+        .calc-grid button {
+            border: none;
+            outline: none;
+            padding: 18px 5px;
+            font-size: 1.2rem;
+            border-radius: 50%;
+            cursor: pointer;
+            background-color: #1c1c1e;
+            color: #ffffff;
+            touch-action: manipulation;
+            aspect-ratio: 1;
+        }
+
+        .calc-grid button:active { opacity: 0.6; }
+        .calc-grid button.sci { color: #999999; font-size: 1.05rem; }
+        .calc-grid button.op { color: #f2a33c; font-size: 1.4rem; }
+        .calc-grid button.util { color: #f2a33c; }
+        .calc-grid button.equals { background-color: #f2a33c; color: #ffffff; }
+
+        /* ================= CONVERTER VIEW ================= */
+        .converter-menu {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px 15px;
+            padding-top: 15px;
+        }
+
+        .menu-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: #aaaaaa;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 12px;
+            transition: background 0.2s;
+        }
+
+        .menu-item:active { background-color: #1c1c1e; }
+
+        .menu-item .icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            color: #ffffff;
+        }
+
+        .menu-item span {
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* Dynamic Working Sheet Panel for active conversion */
+        .conversion-pane {
+            display: none;
+            flex-direction: column;
+            gap: 20px;
+            background: #121212;
+            padding: 15px;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+
+        .pane-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #222;
+            padding-bottom: 10px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: #f2a33c;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .unit-row {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .unit-row select {
+            background: #2c2c2e;
+            color: white;
+            border: none;
+            padding: 8px;
+            border-radius: 6px;
+            outline: none;
+        }
+
+        .unit-row input {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid #333;
+            color: white;
+            font-size: 1.5rem;
+            padding: 5px;
+            outline: none;
+        }
+        .unit-row input:focus { border-color: #f2a33c; }
+
+        @media (max-width: 380px) {
+            .calc-grid button { padding: 12px 2px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="tabs-header">
+            <button class="tab-btn active" onclick="switchTab('calculator')">Calculator</button>
+            <button class="tab-btn" onclick="switchTab('converter')">Converter</button>
+        </div>
+
+        <div id="calculator" class="tab-content active">
+            <div class="display">
+                <div class="history" id="history"></div>
+                <div class="input-output" id="display-main">0</div>
+            </div>
+            <div class="calc-grid">
+                <button class="sci" data-val="2nd">2nd</button>
+                <button class="sci" data-val="deg">deg</button>
+                <button class="sci" data-val="Math.asin(">sin⁻¹</button>
+                <button class="sci" data-val="Math.acos(">cos⁻¹</button>
+                <button class="sci" data-val="Math.atan(">tan⁻¹</button>
+
+                <button class="sci" data-val="**">x<sup>y</sup></button>
+                <button class="sci" data-val="Math.LN10*Math.log10(">lg</button>
+                <button class="sci" data-val="Math.log(">ln</button>
+                <button class="sci" data-val="(">(</button>
+                <button class="sci" data-val=")">)</button>
+
+                <button class="sci" data-val="Math.sqrt(">√x</button>
+                <button class="util" data-val="ac">AC</button>
+                <button class="util" data-val="back">⌫</button>
+                <button class="op" data-val="pct">%</button>
+                <button class="op" data-val="/">÷</button>
+
+                <button class="sci" data-val="fact">x!</button>
+                <button class="num" data-val="7">7</button>
+                <button class="num" data-val="8">8</button>
+                <button class="num" data-val="9">9</button>
+                <button class="op" data-val="*">×</button>
+
+                <button class="sci" data-val="1/">1/x</button>
+                <button class="num" data-val="4">4</button>
+                <button class="num" data-val="5">5</button>
+                <button class="num" data-val="6">6</button>
+                <button class="op" data-val="-">−</button>
+
+                <button class="sci" data-val="Math.PI">π</button>
+                <button class="num" data-val="1">1</button>
+                <button class="num" data-val="2">2</button>
+                <button class="num" data-val="3">3</button>
+                <button class="op" data-val="+">+</button>
+
+                <button class="sci" data-val="expanded">⇄</button>
+                <button class="sci" data-val="Math.E">e</button>
+                <button class="num" data-val="0">0</button>
+                <button class="num" data-val=".">.</button>
+                <button class="equals" data-val="equal">=</button>
+            </div>
+        </div>
+
+        <div id="converter" class="tab-content">
+            <div class="converter-menu" id="menu-grid">
+                <div class="menu-item" onclick="openConverter('Length')">
+                    <div class="icon">📏</div><span>Length</span>
+                </div>
+                <div class="menu-item" onclick="openConverter('Mass')">
+                    <div class="icon">⚖️</div><span>Mass</span>
+                </div>
+                <div class="menu-item" onclick="openConverter('Area')">
+                    <div class="icon">📐</div><span>Area</span>
+                </div>
+                <div class="menu-item" onclick="openConverter('Time')">
+                    <div class="icon">🕒</div><span>Time</span>
+                </div>
+                <div class="menu-item">
+                    <div class="icon" style="opacity: 0.3;">💱</div><span style="opacity: 0.3;">Currency</span>
+                </div>
+                <div class="menu-item">
+                    <div class="icon" style="opacity: 0.3;">📊</div><span style="opacity: 0.3;">Finance</span>
+                </div>
+            </div>
+
+            <div class="conversion-pane" id="conversion-pane">
+                <div class="pane-header">
+                    <h3 id="pane-title">Converter</h3>
+                    <button class="back-btn" onclick="closeConverter()">✕ Close</button>
+                </div>
+                <div class="unit-row">
+                    <label>From:</label>
+                    <select id="unit-from" onchange="runConversion()"></select>
+                    <input type="number" id="val-from" value="1" oninput="runConversion()">
+                </div>
+                <div class="unit-row">
+                    <label>To:</label>
+                    <select id="unit-to" onchange="runConversion()"></select>
+                    <input type="number" id="val-to" readonly>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Switching Logic Engine
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // ================= CALCULATOR CORE INTERACTION RUNTIME =================
+        const displayMain = document.getElementById('display-main');
+        const displayHistory = document.getElementById('history');
+        let currentExpression = '';
+
+        document.querySelectorAll('.calc-grid button').forEach(button => {
+            const handleAction = (e) => {
+                e.preventDefault();
+                processInput(button.getAttribute('data-val'));
+            };
+            button.addEventListener('touchstart', handleAction, { passive: false });
+            button.addEventListener('click', handleAction);
+        });
+
+        function processInput(val) {
+            if (!val || val === '2nd' || val === 'deg' || val === 'expanded') return;
+            if (val === 'ac') { currentExpression = ''; displayHistory.innerText = ''; displayMain.innerText = '0'; }
+            else if (val === 'back') { currentExpression = currentExpression.slice(0, -1); formatDisplay(); }
+            else if (val === 'equal') { calculate(); }
+            else if (val === '1/') { currentExpression += '1/('; formatDisplay(); }
+            else { currentExpression += val; formatDisplay(); }
+        }
+
+        function formatDisplay() {
+            displayMain.innerText = currentExpression ? currentExpression.replace(/Math\./g, '') : '0';
+        }
+
+        function calculate() {
+            try {
+                let result = eval(currentExpression);
+                displayHistory.innerText = displayMain.innerText + ' =';
+                displayMain.innerText = Number(result.toFixed(6));
+                currentExpression = result.toString();
+            } catch {
+                displayMain.innerText = 'Error';
+                currentExpression = '';
+            }
+        }
+
+        // ================= CONVERTER CORE INTERACTION RUNTIME =================
+        const unitData = {
+            Length: { units: ['Meters', 'Kilometers', 'Centimeters', 'Miles', 'Feet'], factors: { Meters: 1, Kilometers: 1000, Centimeters: 0.01, Miles: 1609.34, Feet: 0.3048 } },
+            Mass: { units: ['Kilograms', 'Grams', 'Pounds', 'Ounces'], factors: { Kilograms: 1, Grams: 0.001, Pounds: 0.453592, Ounces: 0.0283495 } },
+            Area: { units: ['Square Meters', 'Square Kilometers', 'Acres', 'Hectares'], factors: { 'Square Meters': 1, 'Square Kilometers': 1000000, Acres: 4046.86, Hectares: 10000 } },
+            Time: { units: ['Seconds', 'Minutes', 'Hours', 'Days'], factors: { Seconds: 1, Minutes: 60, Hours: 3600, Days: 86400 } }
+        };
+
+        let currentActiveType = '';
+
+        function openConverter(type) {
+            currentActiveType = type;
+            document.getElementById('pane-title').innerText = type + " Converter";
+            document.getElementById('menu-grid').style.display = 'none';
+            document.getElementById('conversion-pane').style.display = 'flex';
+
+            const fromSel = document.getElementById('unit-from');
+            const toSel = document.getElementById('unit-to');
+            fromSel.innerHTML = ''; toSel.innerHTML = '';
+
+            unitData[type].units.forEach(u => {
+                fromSel.add(new Option(u, u));
+                toSel.add(new Option(u, u));
+            });
+            if(toSel.options.length > 1) toSel.selectedIndex = 1;
+            runConversion();
+        }
+
+        function closeConverter() {
+            document.getElementById('conversion-pane').style.display = 'none';
+            document.getElementById('menu-grid').style.display = 'grid';
+        }
+
+        function runConversion() {
+            const type = currentActiveType;
+            const fromUnit = document.getElementById('unit-from').value;
+            const toUnit = document.getElementById('unit-to').value;
+            const inputVal = parseFloat(document.getElementById('val-from').value) || 0;
+
+            // Convert to a base standard unit first, then map outwards
+            const baseValue = inputVal * unitData[type].factors[fromUnit];
+            const outputVal = baseValue / unitData[type].factors[toUnit];
+
+            document.getElementById('val-to').value = outputVal.toString().includes('.') ? outputVal.toFixed(5) : outputVal;
+        }
+    </script>
+</body>
+</html>
